@@ -1,43 +1,66 @@
-const express = require('express');
-let books = require("./booksdb.js");
-let isValid = require("./auth_users.js").isValid;
-let users = require("./auth_users.js").users;
-const public_users = express.Router();
 
+const axios = require('axios');
 
-public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+const BASE_URL = 'http://localhost:5000';
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+// Retrieve all books
+function getAllBooks() {
+  return axios.get(`${BASE_URL}/`)
+    .then(response => {
+      console.log('All books:', response.data);
+      return response.data;
+    })
+    .catch(error => {
+      console.error('Error retrieving all books:', error.message);
+      throw error;
+    });
+}
 
-// Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
-  
-// Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+// Retrieve a book by ISBN
+async function getBooksByISBN(isbn) {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/isbn/${encodeURIComponent(isbn)}`
+    );
+    console.log('Book by ISBN:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving book by ISBN:', error.message);
+    throw error;
+  }
+}
 
-// Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+// Retrieve books by author
+async function getBooksByAuthor(author) {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/author/${encodeURIComponent(author)}`
+    );
+    console.log('Books by author:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving books by author:', error.message);
+    throw error;
+  }
+}
 
-//  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+// Retrieve books by title
+async function getBooksByTitle(title) {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/title/${encodeURIComponent(title)}`
+    );
+    console.log('Books by title:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving books by title:', error.message);
+    throw error;
+  }
+}
 
-module.exports.general = public_users;
+module.exports = {
+  getAllBooks,
+  getBooksByISBN,
+  getBooksByAuthor,
+  getBooksByTitle
+};
